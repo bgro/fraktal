@@ -14,6 +14,7 @@ namespace fraktal
 {
     public partial class Form1 : Form
     {
+        int resolution = 400;
         public Form1()
         {
 
@@ -22,25 +23,27 @@ namespace fraktal
             Graphics dc = this.CreateGraphics();
             this.Show();
             int draw_black = 0;
-            double leftFrame = -1.5;
-            double rightFrame = 0.5;
-            double topFrame = 0.75;
-            double bottomFrame = -0.75;
+            double leftFrame = -0.8495; // -1.5;
+            double rightFrame = -0.85; // 0.5;
+            double topFrame = 0.2005; // 0.75;
+            double bottomFrame = 0.20; // -0.75;
 
 
             Pen BlackPen = new Pen(Color.Black, 1);
+            Pen RedPen = new Pen(Color.Red, 2);
             Pen Pen = new Pen(Color.Red, 1);
 
             string fileName = @"C:\Users\bernd\log.txt";
             FileInfo filetoappend = new FileInfo(fileName);
             using (StreamWriter sw = filetoappend.AppendText())
             {
-                for (int x = 0; x < 600; x++)
+                // Draw Mandelbrot set
+                for (int x = 0; x < resolution; x++)
                 {
-                    for (int y = 0; y < 400; y++)
+                    for (int y = 0; y < resolution; y++)
                     {
-                        var cX = leftFrame + (rightFrame - leftFrame) * (double)x / (double)600;
-                        var cY = topFrame - (topFrame - bottomFrame) * (double)y / (double)400;
+                        var cX = leftFrame + (rightFrame - leftFrame) * (double)x / (double)resolution;
+                        var cY = topFrame - (topFrame - bottomFrame) * (double)y / (double)resolution;
 
                         var c = new Complex(cX, cY);
                         var z = new Complex(0.0, 0.0);
@@ -68,6 +71,16 @@ namespace fraktal
                         sw.WriteLine($"n: {n} x: {x} y: {y} cX: {cX}, cY: {cY}, |z|: {z.Magnitude} draw_black: {draw_black}");
                     }
                 }
+                // Draw ticks at frame's edge
+                for (int k = 1; k < 10; k++) {
+                    int tick = (int)(resolution / 10.0) * k;
+                    dc.DrawLine(RedPen, tick, 0, tick, 10);
+                    dc.DrawLine(RedPen, tick, resolution, tick, resolution-10);
+                    dc.DrawLine(RedPen, 0, tick, 10, tick);
+                    dc.DrawLine(RedPen, resolution, tick, resolution - 10, tick);
+
+                }
+
             }
 
         }
